@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <h1>Admin Dashboard</h1>
+            <a href="/logout">Logout</a>
+        </div>
+        
+        <div class="card">
+            <h2>Add New Student</h2>
+            <form method="POST" action="/admin/add_student">
+                <input type="text" name="username" placeholder="Student Username (Login)" required>
+                <input type="password" name="password" placeholder="Student Password (Login)" required>
+                <input type="text" name="name" placeholder="Full Name" required>
+                <input type="text" name="dept" placeholder="Department (e.g., Computer Science)" required>
+                <input type="number" name="year" placeholder="Year (e.g., 2)" required>
+                <button type="submit">Add Student</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Update Fee Details</h2>
+            <form method="POST" action="/admin/update_fees">
+                <input type="number" name="student_id" placeholder="Student ID" required>
+                <input type="text" name="status" placeholder="Fee Status (e.g., Paid, Pending)" required>
+                <button type="submit">Update Fees</button>
+            </form>
+        </div>
+
+        <div class="card" style="box-shadow: none; padding: 0;">
+            <h2>All Students</h2>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Year</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.id }}</td>
+                            <td>{{ student.user_id }}</td>
+                            <td>{{ student.name }}</td>
+                            <td>{{ student.dept }}</td>
+                            <td>{{ student.year }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% if not students %}
+                        <tr>
+                            <td colspan="5" style="text-align:center;">No students found</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

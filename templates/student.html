@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Smart College Assistant</title>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --primary-light: #f0f7ff;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --bg-color: #f4f7f6;
+            --sidebar-bg: #ffffff;
+            --text-dark: #333333;
+            --text-light: #888888;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .sidebar-header h2 {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+            flex: 1;
+        }
+
+        .sidebar-menu li {
+            padding: 0 15px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu a:hover i,
+        .sidebar-menu a.active i {
+            color: var(--primary-color);
+        }
+
+        .logout-btn {
+            margin: 20px 15px;
+        }
+
+        .logout-btn a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            background-color: #fff;
+            color: var(--danger-color);
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid var(--danger-color);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .logout-btn a i {
+            margin-right: 10px;
+        }
+
+        .logout-btn a:hover {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px 40px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .header p {
+            color: var(--secondary-color);
+            margin-top: 5px;
+        }
+
+        /* Grid System */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .col-12 {
+            grid-column: span 12;
+        }
+
+        .col-8 {
+            grid-column: span 8;
+        }
+
+        .col-6 {
+            grid-column: span 6;
+        }
+
+        .col-4 {
+            grid-column: span 4;
+        }
+
+        /* Cards Layout */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .card-header i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        /* Profile Card */
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            height: 100%;
+        }
+
+        .profile-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-light);
+            box-shadow: var(--shadow);
+        }
+
+        .profile-info h3 {
+            margin-bottom: 8px;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .profile-info p {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-info p i {
+            width: 16px;
+            color: var(--primary-color);
+        }
+
+        /* Performance Insights */
+        .insights-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            height: 100%;
+            gap: 15px;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background-color: var(--bg-color);
+            border-radius: 10px;
+        }
+
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .insight-icon.top {
+            background-color: #d1e7dd;
+            color: var(--success-color);
+        }
+
+        .insight-icon.weak {
+            background-color: #f8d7da;
+            color: var(--danger-color);
+        }
+
+        .insight-icon.over {
+            background-color: #cff4fc;
+            color: #0dcaf0;
+        }
+
+        .insight-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .insight-text .label {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .insight-text .value {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background-color: var(--success-color);
+            color: white;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        /* Attendance Analytics */
+        .attendance-chart-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .attendance-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .attendance-summary {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .summary-item .stat-label {
+            font-size: 0.8rem;
+            color: var(--secondary-color);
+        }
+
+        /* Charts Container */
+        .chart-wrapper {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        /* Marks Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .marks-table th,
+        .marks-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .marks-table th {
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .marks-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .marks-table tbody tr:hover {
+            background-color: var(--primary-light);
+        }
+
+        /* Fees Section */
+        .fees-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .fee-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+
+        .fee-label {
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        .fee-amount {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .amount-total {
+            color: var(--text-dark);
+        }
+
+        .amount-paid {
+            color: var(--success-color);
+        }
+
+        .amount-due {
+            color: var(--danger-color);
+        }
+
+        .progress-wrapper {
+            margin-top: 10px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        /* --- Chatbot Specific CSS --- */
+        .chatbot-toggler {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            outline: none;
+            border: none;
+            height: 60px;
+            width: 60px;
+            display: flex;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: #fff;
+            font-size: 1.6rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .chatbot-toggler:hover {
+            transform: scale(1.05);
+            background: #0b5ed7;
+        }
+
+        .chatbot {
+            position: fixed;
+            right: 30px;
+            bottom: 100px;
+            width: 350px;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.5);
+            transform-origin: bottom right;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        body.show-chatbot .chatbot {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+
+        .chatbot header {
+            padding: 16px 0;
+            position: relative;
+            text-align: center;
+            color: #fff;
+            background: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chatbot header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .chatbot header .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .chatbox {
+            overflow-y: auto;
+            height: 380px;
+            padding: 20px 15px;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chatbox::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chatbox::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 6px;
+        }
+
+        .chat {
+            display: flex;
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        .chat p {
+            word-wrap: break-word;
+            padding: 10px 15px;
+            border-radius: 12px;
+            max-width: 80%;
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .chat-outgoing {
+            justify-content: flex-end;
+        }
+
+        .chat-outgoing p {
+            background: var(--primary-color);
+            color: #fff;
+            border-bottom-right-radius: 0;
+        }
+
+        .chat-incoming p {
+            background: #fff;
+            color: var(--text-dark);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 0;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            background: #fff;
+            padding: 12px 15px;
+            border-top: 1px solid #eee;
+            align-items: center;
+        }
+
+        .chat-input input {
+            height: 45px;
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 0.95rem;
+            padding: 0 15px;
+            border-radius: 25px;
+            background: #f0f2f5;
+        }
+
+        .chat-input button {
+            background: var(--primary-color);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1.1rem;
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .chat-input button:hover {
+            background: #0b5ed7;
+            transform: scale(1.05);
+        }
+
+        /* --- End Chatbot Specific CSS --- */
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+
+            .col-8,
+            .col-4 {
+                grid-column: span 12;
+            }
+
+            .profile-section {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 490px) {
+            .chatbot {
+                right: 0;
+                bottom: 0;
+                height: 100%;
+                border-radius: 0;
+                width: 100%;
+            }
+
+            .chatbot header .close-btn {
+                display: block;
+            }
+
+            .chatbox {
+                height: calc(100% - 130px);
+            }
+
+            .chatbot-toggler {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-graduation-cap"></i> Smart ERP</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li><a href="#attendance"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+            <li><a href="#marks"><i class="fas fa-chart-bar"></i> Performance</a></li>
+            <li><a href="#fees"><i class="fas fa-file-invoice-dollar"></i> Fees</a></li>
+            <li><a href="#leave-od"><i class="fas fa-envelope-open-text"></i> Leave / OD Request</a></li>
+        </ul>
+        <div class="logout-btn">
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h1>Student Portal</h1>
+            <p>Your academic overview and analytics dashboard</p>
+        </header>
+
+        <!-- ROW 1: Profile & Insights -->
+        <div class="dashboard-grid">
+            <!-- Profile Card -->
+            <div class="card col-8">
+                <div class="profile-section">
+                    <img src="https://via.placeholder.com/150/e9ecef/888888?text=Photo" alt="Student Photo"
+                        class="profile-img">
+                    <div class="profile-info">
+                        <h3>{{ student[1] }}</h3>
+                        <p><i class="fas fa-id-card"></i> <strong>Registration. No:</strong> {{ student[2] }}</p>
+                        <p><i class="fas fa-building"></i> <strong>Department:</strong> {{ student[4] }}
+                        </p>
+                        <p><i class="fas fa-user-graduate"></i> <strong>Year:</strong> {{ student[5] }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Insight Card -->
+            <div class="card col-4">
+                <div class="card-header">
+                    <i class="fas fa-lightbulb"></i> Performance Insights
+                </div>
+                <div class="insights-container">
+                    <div class="insight-item">
+                        <div class="insight-icon top"><i class="fas fa-arrow-trend-up"></i></div>
+                        <div class="insight-text">
+                            <span class="label">Top Subject</span>
+                            <span class="value">Database Mgmt</span>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon weak"><i class="fas fa-arrow-trend-down"></i></div>
+                        <div class="insight-text">
+                            <span class="label">Weak Subject</span>
+                            <span class="value">Comp. Networks</span>
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-icon over"><i class="fas fa-award"></i></div>
+                        <div class="insight-text">
+                            <span class="label">Overall Standing</span>
+                            <span class="badge">Excellent</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 2: Attendance Analytics -->
+        <div class="dashboard-grid" id="attendance">
+            <!-- Doughnut Chart Analytics -->
+            <div class="card col-4">
+                <div class="card-header">
+                    <i class="fas fa-user-check"></i> Attendance Analytics
+                </div>
+                <div class="attendance-chart-container">
+                    <canvas id="attendanceDoughnut"></canvas>
+                    <div class="attendance-text">{{ attendance[1] if attendance else 0 }}%</div>
+                </div>
+                <div class="attendance-summary">
+                    <div class="summary-item">
+                        <div class="stat-value">120</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="stat-value" style="color: var(--success-color);">102</div>
+                        <div class="stat-label">Attended</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="stat-value" style="color: var(--danger-color);">18</div>
+                        <div class="stat-label">Missed</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trend Line Chart -->
+            <div class="card col-8">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i> Attendance Trend (Last 6 Months)
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="attendanceTrend"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 3: Marks Charts & Fees -->
+        <div class="dashboard-grid" id="marks">
+            <!-- Marks Bar Chart -->
+            <div class="card col-8">
+                <div class="card-header">
+                    <i class="fas fa-chart-simple"></i> Subject-wise Performance
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="marksBarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Fees Summary -->
+            <div class="card col-4" id="fees">
+                <div class="card-header">
+                    <i class="fas fa-wallet"></i> Fee Summary
+                </div>
+                <div class="fees-info">
+                    <div class="fee-item">
+                        <span class="fee-label">Total Fees</span>
+                        <span class="fee-amount amount-total">$5,000</span>
+                    </div>
+                    <div class="fee-item">
+                        <span class="fee-label">Paid Amount</span>
+                        <span class="fee-amount amount-paid">$3,500</span>
+                    </div>
+                    <div class="fee-item" style="border-bottom: none;">
+                        <span class="fee-label">Due Amount</span>
+                        <span class="fee-amount amount-due">$1,500</span>
+                    </div>
+                    <div class="progress-wrapper">
+                        <div class="progress-header">
+                            <span>Payment Status</span>
+                            <span>70%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: 70%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 4: Marks Table -->
+        <div class="dashboard-grid">
+            <div class="card col-12">
+                <div class="card-header">
+                    <i class="fas fa-table"></i> Academic Marks Details
+                </div>
+                <div class="table-responsive">
+                    <table class="marks-table">
+                        <thead>
+                            <tr>
+                                <th>Subject Code</th>
+                                <th>Subject Name</th>
+                                <th>Internal 1</th>
+                                <th>Internal 2</th>
+                                <th>Average</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in internal_marks %}
+                            <tr>
+                                <td>-</td>
+                                <td><strong>{{ m[2] }}</strong></td>
+                                <td>{{ m[3] }}/{{ m[4] }}</td>
+                                <td>-</td>
+                                <td>{{ m[5]|round(2) }}%</td>
+                                <td>
+                                    {% if m[5] >= 50 %}
+                                    <span style="color: var(--success-color); font-weight: 500;"><i class="fas fa-check-circle"></i> Pass</span>
+                                    {% else %}
+                                    <span style="color: var(--danger-color); font-weight: 500;"><i class="fas fa-times-circle"></i> Fail</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding: 20px;">No internal marks recorded yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 5: Leave / OD Request Section -->
+        <div class="dashboard-grid" id="leave-od">
+            <!-- Form Card -->
+            <div class="card col-4">
+                <div class="card-header">
+                    <i class="fas fa-envelope-open-text"></i> Submit Leave / OD Request
+                </div>
+                <form id="leave-od-form" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div>
+                        <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Student Name</label>
+                        <input type="text" value="{{ student[1] }}" readonly style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; background: #e9ecef; outline: none; margin-top: 5px; color: var(--text-dark);">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Register Number</label>
+                        <input type="text" value="{{ student[2] }}" readonly required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; background: #e9ecef; outline: none; margin-top: 5px; color: var(--text-dark);">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Request Type</label>
+                        <select required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; background: white; color: var(--text-dark);">
+                            <option value="">Select Type</option>
+                            <option value="Leave">Leave</option>
+                            <option value="OD">On Duty (OD)</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div style="flex: 1;">
+                            <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">From Date</label>
+                            <input type="date" required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; color: var(--text-dark);">
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">To Date</label>
+                            <input type="date" required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; color: var(--text-dark);">
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Reason</label>
+                        <textarea rows="3" required placeholder="Briefly describe the reason..." style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; resize: vertical; color: var(--text-dark);"></textarea>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Upload Document</label>
+                        <input type="file" style="width: 100%; padding: 5px 0; margin-top: 5px; font-size: 0.9rem; color: var(--secondary-color);">
+                    </div>
+                    <button type="button" style="background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 10px;">Submit Request</button>
+                </form>
+            </div>
+
+            <!-- Status Table Card -->
+            <div class="card col-8">
+                <div class="card-header">
+                    <i class="fas fa-list-check"></i> Request Status
+                </div>
+                <div class="table-responsive">
+                    <table class="marks-table">
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Type</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in leave_requests %}
+                            <tr>
+                                <td>REQ-{{ req[0] }}</td>
+                                <td><strong>{{ req[2] }}</strong></td>
+                                <td>{{ req[3] }}</td>
+                                <td>{{ req[4] }}</td>
+                                <td>
+                                    {% if req[6] == 'Approved' %}
+                                    <span style="background: var(--success-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Approved</span>
+                                    {% elif req[6] == 'Pending' %}
+                                    <span style="background: var(--warning-color); color: #000; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Pending</span>
+                                    {% else %}
+                                    <span style="background: var(--danger-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Rejected</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" style="text-align:center;">No leave/OD requests found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chatbot UI Widget -->
+    <button class="chatbot-toggler">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+    <div class="chatbot">
+        <header>
+            <h2>Smart Assistant 🤖</h2>
+            <span class="close-btn"><i class="fas fa-times"></i></span>
+        </header>
+        <ul class="chatbox">
+            <li class="chat chat-incoming">
+                <p>Hi there 👋<br>How can I help you today? Try asking about attendance, marks, or fees.</p>
+            </li>
+        </ul>
+        <div class="chat-input">
+            <input type="text" placeholder="Type your message..." required>
+            <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- External JS Template Link -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <!-- Scripts for Charts and Chatbot -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // --- Chart.js Configurations ---
+            Chart.defaults.font.family = "'Poppins', sans-serif";
+            Chart.defaults.color = '#6c757d';
+
+            // 1. Attendance Doughnut Chart
+            const ctxDoughnut = document.getElementById('attendanceDoughnut').getContext('2d');
+            const attendancePercentage = 85;
+
+            new Chart(ctxDoughnut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Attended', 'Missed'],
+                    datasets: [{
+                        data: [attendancePercentage, 100 - attendancePercentage],
+                        backgroundColor: ['#0d6efd', '#e9ecef'],
+                        borderWidth: 0,
+                        hoverOffset: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return ' ' + context.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. Attendance Trend Line Chart
+            const ctxTrend = document.getElementById('attendanceTrend').getContext('2d');
+            new Chart(ctxTrend, {
+                type: 'line',
+                data: {
+                    labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'],
+                    datasets: [{
+                        label: 'Attendance %',
+                        data: [70, 75, 72, 80, 82, 85],
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#198754',
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 100,
+                            grid: { borderDash: [5, 5], color: '#f0f0f0' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 3. Marks Subject-wise Bar Chart
+            const ctxBar = document.getElementById('marksBarChart').getContext('2d');
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Data Structures', 'Operating Sytems', 'Database Mgmt', 'Comp. Networks'],
+                    datasets: [{
+                        label: 'Average Score (Out of 50)',
+                        data: [46.5, 41.0, 48.0, 41.0],
+                        backgroundColor: [
+                            'rgba(13, 110, 253, 0.8)',
+                            'rgba(13, 110, 253, 0.8)',
+                            'rgba(25, 135, 84, 0.8)',
+                            'rgba(255, 193, 7, 0.8)'
+                        ],
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 50,
+                            grid: { borderDash: [5, 5], color: '#f0f0f0' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+
+            // --- Chatbot Logic ---
+            const chatbotToggler = document.querySelector(".chatbot-toggler");
+            const closeBtn = document.querySelector(".close-btn");
+            const chatbox = document.querySelector(".chatbox");
+            const chatInput = document.querySelector(".chat-input input");
+            const sendChatBtn = document.querySelector("#send-btn");
+
+            // Define predefined responses
+            const responses = {
+                "hello": "Hello! How can I assist you with your college info today?",
+                "hi": "Hi there! 👋 How can I help you?",
+                "attendance": "Your overall attendance is 85%. You've attended 102 classes out of 120 so far. Keep it up!",
+                "marks": "In recent internal exams, your top subject is Database Management (48/50). Your weakest is Computer Networks (41/50). Your overall standing is Excellent.",
+                "fees": "Your total fee is $5,000. You've paid $3,500 safely, and an amount of $1,500 is still due."
+            };
+
+            const toggleChatbot = () => {
+                document.body.classList.toggle("show-chatbot");
+                const icon = chatbotToggler.querySelector("i");
+                if (document.body.classList.contains("show-chatbot")) {
+                    icon.classList.remove("fa-comment-dots");
+                    icon.classList.add("fa-xmark");
+                } else {
+                    icon.classList.remove("fa-xmark");
+                    icon.classList.add("fa-comment-dots");
+                }
+            }
+
+            chatbotToggler.addEventListener("click", toggleChatbot);
+            closeBtn.addEventListener("click", toggleChatbot);
+
+            const createChatLi = (message, className) => {
+                const chatLi = document.createElement("li");
+                chatLi.classList.add("chat", className);
+                chatLi.innerHTML = `<p>${message}</p>`;
+                return chatLi;
+            }
+
+            const handleChat = () => {
+                let userMessage = chatInput.value.trim();
+                if (!userMessage) return;
+
+                // Clear input
+                chatInput.value = "";
+
+                // Append User string
+                chatbox.appendChild(createChatLi(userMessage, "chat-outgoing"));
+                chatbox.scrollTo(0, chatbox.scrollHeight);
+
+                // Simulate slight delay in Bot response for realism
+                setTimeout(() => {
+                    let msgLower = userMessage.toLowerCase();
+                    let botResponse = "I didn’t understand. Try asking about attendance, marks, or fees.";
+
+                    // Simple keyword matching
+                    for (let key in responses) {
+                        if (msgLower.includes(key)) {
+                            botResponse = responses[key];
+                            break;
+                        }
+                    }
+
+                    chatbox.appendChild(createChatLi(botResponse, "chat-incoming"));
+                    chatbox.scrollTo(0, chatbox.scrollHeight);
+                }, 600);
+            }
+
+            sendChatBtn.addEventListener("click", handleChat);
+            chatInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleChat();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
