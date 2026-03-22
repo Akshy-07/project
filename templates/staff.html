@@ -348,11 +348,13 @@
     </nav>
 
     <div class="container">
-        
+
         <!-- Announcements Alert -->
         {% if announcements %}
-        <div class="header-section" style="margin-bottom: 25px; background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary-color); box-shadow: var(--shadow);">
-            <h3 style="margin-bottom: 15px; color: var(--primary-color); display: flex; align-items: center; gap: 10px;">
+        <div class="header-section"
+            style="margin-bottom: 25px; background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary-color); box-shadow: var(--shadow);">
+            <h3
+                style="margin-bottom: 15px; color: var(--primary-color); display: flex; align-items: center; gap: 10px;">
                 <i class="fas fa-bullhorn"></i> Important Announcements
             </h3>
             <div style="display: flex; flex-direction: column; gap: 15px;">
@@ -360,7 +362,8 @@
                 <div style="padding-bottom: 10px; border-bottom: 1px dotted #ccc;">
                     <strong style="display: block; margin-bottom: 5px;">{{ ann.title }}</strong>
                     <p style="font-size: 0.9rem; line-height: 1.5;">{{ ann.message }}</p>
-                    <small style="color: var(--secondary-color); font-size: 0.75rem;">Posted on {{ ann.created_at[:10] }}</small>
+                    <small style="color: var(--secondary-color); font-size: 0.75rem;">Posted on {{ ann.created_at[:10]
+                        }}</small>
                 </div>
                 {% endfor %}
             </div>
@@ -461,20 +464,23 @@
                 <p>There are currently no leave or OD applications to review.</p>
             </div>
             {% endfor %}
-        </div>        <!-- NEW SECTION: DATA ENTRY TOOLS -->
+        </div> <!-- NEW SECTION: DATA ENTRY TOOLS -->
         <hr style="margin: 40px 0; border: none; border-top: 1px solid #dee2e6;">
         <div class="header-section">
-            <h2 style="font-size: 1.5rem; color: var(--text-dark);"><i class="fas fa-tools"></i> Student Management Tools</h2>
-            <p style="color: var(--secondary-color);">Add new students, upload internal marks, and update attendance.</p>
+            <h2 style="font-size: 1.5rem; color: var(--text-dark);"><i class="fas fa-tools"></i> Student Management
+                Tools</h2>
+            <p style="color: var(--secondary-color);">Add new students, upload internal marks, and update attendance.
+            </p>
         </div>
 
         <style>
             .mgmt-container {
-                display: grid; 
-                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-                gap: 25px; 
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 25px;
                 align-items: stretch;
             }
+
             .mgmt-card {
                 display: flex;
                 flex-direction: column;
@@ -486,13 +492,23 @@
                 border-top: 5px solid var(--primary-color);
                 transition: transform 0.2s;
             }
-            .mgmt-card:hover { transform: translateY(-5px); }
-            .mgmt-card h3 { font-size: 1.15rem; margin-bottom: 20px; color: var(--text-dark); }
+
+            .mgmt-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .mgmt-card h3 {
+                font-size: 1.15rem;
+                margin-bottom: 20px;
+                color: var(--text-dark);
+            }
+
             .mgmt-form {
                 display: flex;
                 flex-direction: column;
                 flex-grow: 1;
             }
+
             .mgmt-inputs {
                 display: flex;
                 flex-direction: column;
@@ -500,6 +516,7 @@
                 margin-bottom: 25px;
                 flex-grow: 1;
             }
+
             .mgmt-input {
                 width: 100%;
                 min-height: 48px;
@@ -509,7 +526,11 @@
                 outline: none;
                 font-size: 0.95rem;
             }
-            .mgmt-input:focus { border-color: var(--primary-color); }
+
+            .mgmt-input:focus {
+                border-color: var(--primary-color);
+            }
+
             .mgmt-btn {
                 background-color: var(--primary-color);
                 color: #fff;
@@ -523,7 +544,11 @@
                 width: 100%;
                 margin-top: auto;
             }
-            .mgmt-btn:hover { background-color: #0b5ed7; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2); }
+
+            .mgmt-btn:hover {
+                background-color: #0b5ed7;
+                box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+            }
         </style>
 
         <div class="mgmt-container">
@@ -532,7 +557,8 @@
                 <h3><i class="fas fa-user-plus"></i> Add New Student</h3>
                 <form id="addStudentForm" class="mgmt-form">
                     <div class="mgmt-inputs">
-                        <input type="text" id="newReg" placeholder="Register Number (Unique)" required class="mgmt-input">
+                        <input type="text" id="newReg" placeholder="Register Number (Unique)" required
+                            class="mgmt-input">
                         <input type="text" id="newName" placeholder="Student Name" required class="mgmt-input">
                         <select id="newDept" required class="mgmt-input" style="color: var(--text-dark);">
                             <option value="">Select Department</option>
@@ -561,8 +587,10 @@
                         <input type="text" id="markReg" placeholder="Register Number" required class="mgmt-input">
                         <input type="text" id="markSub" placeholder="Subject Name" required class="mgmt-input">
                         <div style="display: flex; gap: 15px;">
-                            <input type="number" id="markObt" placeholder="Marks Obtained" required class="mgmt-input" style="flex: 1;">
-                            <input type="number" id="markMax" placeholder="Max Marks" required class="mgmt-input" style="flex: 1;">
+                            <input type="number" id="markObt" placeholder="Marks Obtained" required class="mgmt-input"
+                                style="flex: 1;">
+                            <input type="number" id="markMax" placeholder="Max Marks" required class="mgmt-input"
+                                style="flex: 1;">
                         </div>
                     </div>
                     <button type="submit" class="mgmt-btn">Upload Marks</button>
@@ -575,8 +603,10 @@
                 <form id="addAttForm" class="mgmt-form">
                     <div class="mgmt-inputs">
                         <input type="text" id="attReg" placeholder="Register Number" required class="mgmt-input">
-                        <input type="number" id="attPct" placeholder="Attendance Percentage (0-100)" min="0" max="100" required class="mgmt-input">
-                        <p style="font-size: 0.85rem; color: var(--secondary-color); font-weight: 500; font-style: italic; background: var(--bg-color); padding: 12px; border-radius: 8px; border-left: 4px solid var(--warning-color);">
+                        <input type="number" id="attPct" placeholder="Attendance Percentage (0-100)" min="0" max="100"
+                            required class="mgmt-input">
+                        <p
+                            style="font-size: 0.85rem; color: var(--secondary-color); font-weight: 500; font-style: italic; background: var(--bg-color); padding: 12px; border-radius: 8px; border-left: 4px solid var(--warning-color);">
                             Note: Attendance below 75% marks the student as a Defaulter.</p>
                     </div>
                     <button type="submit" class="mgmt-btn">Save Attendance</button>
