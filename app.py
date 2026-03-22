@@ -3,6 +3,7 @@ import sqlite3
 import os
 import logging
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
@@ -63,12 +64,15 @@ def init_db():
 
         c.execute('SELECT COUNT(*) FROM users')
         if c.fetchone()[0] == 0:
-            c.execute("INSERT INTO users (username, password, role) VALUES ('admin', 'admin123', 'admin')")
-            c.execute("INSERT INTO users (username, password, role) VALUES ('staff', 'staff123', 'staff')")
+            admin_pw = generate_password_hash('admin123')
+            staff_pw = generate_password_hash('staff123')
+            c.execute("INSERT INTO users (username, password, role) VALUES ('admin', ?, 'admin')", (admin_pw,))
+            c.execute("INSERT INTO users (username, password, role) VALUES ('staff', ?, 'staff')", (staff_pw,))
 
         c.execute('SELECT COUNT(*) FROM students')
         if c.fetchone()[0] == 0:
-            c.execute("INSERT INTO students (name, reg, password, dept, year) VALUES ('John Doe', '1029384756', 'student123', 'Computer Science', 3)")
+            stu_pw = generate_password_hash('student123')
+            c.execute("INSERT INTO students (name, reg, password, dept, year) VALUES ('John Doe', '1029384756', ?, 'Computer Science', 3)", (stu_pw,))
             c.execute("INSERT INTO attendance (student_id, percentage) VALUES (1, 85)")
             c.execute("INSERT INTO marks (student_id, subject, mark) VALUES (1, 'Data Structures', 90)")
             c.execute("INSERT INTO marks (student_id, subject, mark) VALUES (1, 'Algorithms', 88)")
@@ -79,6 +83,21 @@ def init_db():
             c.execute("INSERT INTO leave_requests (reg, type, from_date, to_date, reason, status) VALUES ('1029384756', 'Leave', '2023-10-15', '2023-10-16', 'Sick leave', 'Approved')")
             c.execute("INSERT INTO leave_requests (reg, type, from_date, to_date, reason, status) VALUES ('1029384756', 'OD', '2023-11-05', '2023-11-06', 'Hackathon', 'Pending')")
             c.execute("INSERT INTO leave_requests (reg, type, from_date, to_date, reason, status) VALUES ('1029384756', 'Leave', '2023-12-01', '2023-12-02', 'Family function', 'Rejected')")
+            
+        # --- PASSWORD MIGRATION ---
+        # Detect and hash any plain-text passwords from old database versions
+        users = conn.execute('SELECT id, password FROM users').fetchall()
+        for u in users:
+            if not (u['password'].startswith('pbkdf2:sha256:') or u['password'].startswith('scrypt:')):
+                new_pw = generate_password_hash(u['password'])
+                conn.execute('UPDATE users SET password = ? WHERE id = ?', (new_pw, u['id']))
+        
+        students = conn.execute('SELECT id, password FROM students').fetchall()
+        for s in students:
+            if not (s['password'].startswith('pbkdf2:sha256:') or s['password'].startswith('scrypt:')):
+                new_pw = generate_password_hash(s['password'])
+                conn.execute('UPDATE students SET password = ? WHERE id = ?', (new_pw, s['id']))
+        # --------------------------
             
         conn.commit()
     except Exception as e:
@@ -105,15 +124,18 @@ def login():
 
         conn = get_db_connection()
         try:
-            user = conn.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password)).fetchone()
-            if user:
+            # Check users table (Admin/Staff/etc)
+            user = conn.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
+            if user and check_password_hash(user['password'], password):
                 session['user_id'] = user['id']
                 session['username'] = user['username']
                 session['role'] = user['role']
                 return redirect(url_for(user['role'] + '_dashboard'))
                 
-            student = conn.execute('SELECT * FROM students WHERE reg = ? AND password = ?', (username, password)).fetchone()
-            if student:
+            # Check students table
+            student = conn.execute('SELECT * FROM students WHERE reg = ?', (username,)).fetchone()
+            if student and (check_password_hash(student['password'], password) or student['password'] == password):
+                # Fallback to plain text check for transition period or hashed check
                 session['student_id'] = student['id']
                 session['name'] = student['name']
                 session['reg'] = student['reg']
@@ -182,11 +204,12 @@ def add_student_full():
             photo.save(photo_path)
             
     conn = get_db_connection()
+    hashed_pw = generate_password_hash('student123')
     try:
         conn.execute('''
             INSERT INTO students (name, reg, password, dept, year, dob, parent_name, parent_contact, parent_occ, income, course, course_id, photo_path)
-            VALUES (?, ?, 'student123', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (data.get('name'), data.get('roll_number'), data.get('dept'), data.get('year'),
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (data.get('name'), data.get('roll_number'), hashed_pw, data.get('dept'), data.get('year'),
               data.get('dob'), data.get('parent_name'), data.get('parent_contact'), data.get('parent_occ'),
               data.get('income'), data.get('course'), data.get('course_id'), photo_path))
         conn.commit()

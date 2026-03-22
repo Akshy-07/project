@@ -4,238 +4,459 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart College Assistant</title>
-
+    <title>Sign In - Smart College Assistant</title> <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"> <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --accent-blue: #4d94ff;
+            --text-white: #ffffff;
+            --input-bg: #f3f4f6;
+            --text-grey: #6b7280;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
-        /* Background */
         body {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: #ffffff;
             overflow: hidden;
-            background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+            height: 100vh;
+            position: relative;
         }
 
-        /* Floating animation */
-        .background span {
+        /* --- BACKGROUND ANIMATION (MOVING SQUARES) --- */
+        .bg-squares {
             position: absolute;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            animation: animate 20s linear infinite;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .bg-squares li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(93, 155, 255, 0.1);
+            animation: animate-squares 25s linear infinite;
             bottom: -150px;
         }
 
-        @keyframes animate {
+        .bg-squares li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+
+        .bg-squares li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+
+        .bg-squares li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+        }
+
+        .bg-squares li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .bg-squares li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+
+        .bg-squares li:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 3s;
+        }
+
+        .bg-squares li:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 7s;
+        }
+
+        .bg-squares li:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+        }
+
+        .bg-squares li:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+        }
+
+        .bg-squares li:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+        }
+
+        @keyframes animate-squares {
             0% {
                 transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 0;
             }
 
             100% {
                 transform: translateY(-1000px) rotate(720deg);
-            }
-        }
-
-        /* LEFT FEATURES */
-        .features {
-            position: absolute;
-            left: 5%;
-            top: 15%;
-            width: 260px;
-            color: #fff;
-        }
-
-        .feature-box {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 10px;
-            font-size: 15px;
-        }
-
-        /* RIGHT INFO */
-        .right-info {
-            position: absolute;
-            right: 5%;
-            top: 15%;
-            width: 260px;
-            color: #fff;
-        }
-
-        .info-box {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 10px;
-            font-size: 15px;
-        }
-
-        .stats {
-            margin-top: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 18px;
-            border-radius: 10px;
-        }
-
-        /* LOGIN BOX (BIG) */
-        .login-box {
-            width: 420px;
-            padding: 45px;
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(18px);
-            border-radius: 18px;
-            color: #fff;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-            animation: fadeIn 1s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
                 opacity: 0;
-                transform: translateY(40px);
+                border-radius: 50%;
             }
+        }
 
-            to {
-                opacity: 1;
+        .main-wrapper {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* --- LEFT HERO SECTION --- */
+        .hero-panel {
+            flex: 1.2;
+            background: var(--primary-gradient);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 40px;
+            position: relative;
+            text-align: center;
+        }
+
+        .hero-panel h2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .hero-panel p {
+            font-size: 1rem;
+            max-width: 400px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .features-list {
+            text-align: left;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(10px);
+        }
+
+        .feature-item i {
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+        }
+
+        .signup-btn {
+            padding: 10px 35px;
+            border: 1.5px solid #fff;
+            background: transparent;
+            color: #fff;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .signup-btn:hover {
+            background: #fff;
+            color: #203a43;
+        }
+
+        /* Rocket Illustration */
+        .illustration-box {
+            margin-top: 50px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
                 transform: translateY(0);
             }
+
+            50% {
+                transform: translateY(-15px);
+            }
         }
 
-        /* Title */
-        h2 {
-            margin-bottom: 25px;
-            font-size: 26px;
-        }
-
-        /* Inputs */
-        input {
+        /* Organic Curve Divider */
+        .curve-divider {
+            position: absolute;
+            right: 0;
+            bottom: 0;
             width: 100%;
-            padding: 14px;
-            margin: 12px 0;
-            border: none;
-            border-radius: 10px;
-            outline: none;
-            font-size: 15px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
         }
 
-        /* Password */
-        .password-wrapper {
+        .curve-divider svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- RIGHT LOGIN SECTION --- */
+        .login-panel {
+            flex: 0.8;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px;
             position: relative;
         }
 
-        .toggle {
-            position: absolute;
-            right: 10px;
-            top: 14px;
-            cursor: pointer;
-        }
-
-        /* Button */
-        button {
+        .login-content {
             width: 100%;
-            padding: 14px;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .login-content h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .input-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 16px 25px;
+            background: var(--input-bg);
             border: none;
-            border-radius: 10px;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            color: white;
-            font-size: 17px;
+            border-radius: 50px;
+            font-size: 1rem;
+            color: #333;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-box input::placeholder {
+            color: #999;
+            font-weight: 500;
+        }
+
+        .input-box input:focus {
+            background: #e5e7eb;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: #5d9bff;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 10px 15px -3px rgba(93, 155, 255, 0.3);
+            text-transform: uppercase;
         }
 
-        button:hover {
-            transform: scale(1.05);
+        .submit-btn:hover {
+            background: #4a8df0;
+            transform: translateY(-2px);
         }
 
-        /* Error */
-        .error {
-            color: red;
-            margin-bottom: 10px;
+        .error-msg {
+            color: #f87171;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        /* Password Toggle */
+        .toggle-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 1024px) {
+            .hero-panel {
+                display: none;
+            }
+
+            .login-panel {
+                flex: 1;
+                min-height: 100vh;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- BACKGROUND SQUARES -->
+    <ul class="bg-squares">
+        <li></li><li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li><li></li>
+    </ul>
 
-    <!-- Floating background -->
-    <div class="background">
-        <span style="left:10%; animation-duration:15s;"></span>
-        <span style="left:25%; animation-duration:18s;"></span>
-        <span style="left:50%; animation-duration:22s;"></span>
-        <span style="left:70%; animation-duration:17s;"></span>
-        <span style="left:90%; animation-duration:25s;"></span>
-    </div>
+    <div class="main-wrapper">
+        <!-- LEFT: HERO SECTION (FEATURES/ROCKET) -->
+        <div class="hero-panel">
+            <div style="z-index: 20; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+                    <i class="fas fa-rocket" style="font-size: 3rem; color: var(--accent-blue); transform: rotate(-45deg);"></i>
+                    <div style="text-align: left;">
+                        <h2 style="margin: 0; font-size: 2.5rem;">New here?</h2>
+                        <p style="margin: 5px 0 0 0; font-size: 1.1rem; opacity: 0.9;">Welcome to Smart College Assistant.</p>
+                    </div>
+                </div>
+                
+                <p style="text-align: center; max-width: 450px; margin-bottom: 30px; line-height: 1.6;">
+                    Manage your academics, internal marks, attendance, and student services in one seamless portal.
+                </p>
 
-    <!-- FEATURES LEFT -->
-    <div class="features">
-        <h3>✨ Features</h3>
-        <div class="feature-box">📊 Attendance Tracking</div>
-        <div class="feature-box">📝 Internal Marks</div>
-        <div class="feature-box">💰 Fee Management</div>
-        <div class="feature-box">📢 Announcements</div>
-        <div class="feature-box">📩 Leave / OD Requests</div>
-        <div class="feature-box">🤖 Smart Chatbot</div>
-    </div>
-
-    <!-- LOGIN CENTER -->
-    <div class="login-box">
-
-        <h2>🎓 Smart College Assistant</h2>
-
-        {% if error %}
-        <p class="error">{{ error }}</p>
-        {% endif %}
-
-        <form method="POST" action="/login">
-
-            <input type="text" name="username" placeholder="Enter Username" required>
-
-            <div class="password-wrapper">
-                <input type="password" id="password" name="password" placeholder="Enter Password" required>
-                <span class="toggle" onclick="togglePassword()">👁️</span>
+                <div class="features-list">
+                    <div class="feature-item"><i class="fas fa-calendar-check"></i> Attendance Tracking</div>
+                    <div class="feature-item"><i class="fas fa-graduation-cap"></i> Internal Marks</div>
+                    <div class="feature-item"><i class="fas fa-money-check-alt"></i> Fee Management</div>
+                    <div class="feature-item"><i class="fas fa-bullhorn"></i> Important Announcements</div>
+                    <div class="feature-item"><i class="fas fa-robot"></i> Smart AI Chatbot</div>
+                </div>
             </div>
 
-            <button type="submit">Login</button>
+            <!-- Fading SVG Rocket (Bottom Decoration) -->
+            <div class="illustration-box" style="z-index: 10; position: absolute; bottom: 50px; opacity: 0.3;">
+                <svg width="250" height="250" viewBox="0 0 500 500">
+                    <path d="M250,50 C300,50 350,150 350,350 L150,350 C150,150 200,50 250,50 Z" fill="#fff" />
+                    <path d="M150,350 L100,420 L150,420 Z" fill="#cbd5e1" />
+                    <path d="M350,350 L400,420 L350,420 Z" fill="#cbd5e1" />
+                    <circle cx="250" cy="150" r="30" fill="#3b82f6" />
+                    <rect x="230" y="350" width="40" height="50" fill="#64748b" />
+                </svg>
+            </div>
 
-        </form>
+            <!-- Wave/Curve Divider -->
+            <div class="curve-divider">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M100,0 C80,20 60,80 100,100 L100,100 L100,0 Z" fill="#fff" />
+                </svg>
+            </div>
+        </div>
 
-    </div>
+        <!-- RIGHT: LOGIN SECTION -->
+        <div class="login-panel">
+            <div class="login-content">
+                <h1>Sign In</h1>
+                
+                {% if error %}
+                <p class="error-msg"><i class="fas fa-exclamation-triangle"></i> {{ error }}</p>
+                {% endif %}
 
-    <!-- RIGHT INFO -->
-    <div class="right-info">
-        <h3>📌 Why Use This?</h3>
+                <form method="POST" action="/login">
+                    <div class="input-box">
+                        <input type="text" name="username" placeholder="Username" required>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                        <span class="toggle-btn" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </span>
+                    </div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
 
-        <div class="info-box">🎯 Centralized System</div>
-        <div class="info-box">⚡ Real-time Updates</div>
-        <div class="info-box">📊 Performance Tracking</div>
-        <div class="info-box">📩 Easy Requests</div>
-        <div class="info-box">🔔 Instant Alerts</div>
-
-        <h3 style="margin-top:20px;">📈 Stats</h3>
-        <div class="stats">
-            <p>👨‍🎓 Students: 1000+</p>
-            <p>👨‍🏫 Staff: 50+</p>
-            <p>📂 Modules: 10+</p>
+                <div style="margin-top: 30px; text-align: center; color: #475569; font-size: 0.85rem;">
+                    &copy; 2026 Smart College Assistant
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         function togglePassword() {
-            let p = document.getElementById("password");
-            p.type = (p.type === "password") ? "text" : "password";
+            const p = document.getElementById("password");
+            const icon = document.getElementById("eyeIcon");
+            if (p.type === "password") {
+                p.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                p.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            }
         }
     </script>
-
 </body>
-
 </html>

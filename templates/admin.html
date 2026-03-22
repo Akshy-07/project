@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal - Smart College</title>
     <!-- Google Fonts: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
@@ -39,7 +41,7 @@
             display: flex;
             min-height: 100vh;
             overflow-x: hidden;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 25%),
                 radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 25%);
             background-attachment: fixed;
@@ -181,8 +183,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Cards & Grids */
@@ -214,11 +223,25 @@
             gap: 25px;
         }
 
-        .col-12 { grid-column: span 12; }
-        .col-8 { grid-column: span 8; }
-        .col-6 { grid-column: span 6; }
-        .col-4 { grid-column: span 4; }
-        .col-3 { grid-column: span 3; }
+        .col-12 {
+            grid-column: span 12;
+        }
+
+        .col-8 {
+            grid-column: span 8;
+        }
+
+        .col-6 {
+            grid-column: span 6;
+        }
+
+        .col-4 {
+            grid-column: span 4;
+        }
+
+        .col-3 {
+            grid-column: span 3;
+        }
 
         /* Stats Cards */
         .stat-card {
@@ -244,10 +267,25 @@
             font-size: 1.8rem;
         }
 
-        .stat-icon.primary { background: rgba(59, 130, 246, 0.1); color: var(--primary-color); }
-        .stat-icon.accent { background: rgba(139, 92, 246, 0.1); color: var(--accent); }
-        .stat-icon.success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        .stat-icon.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .stat-icon.primary {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-color);
+        }
+
+        .stat-icon.accent {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent);
+        }
+
+        .stat-icon.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
 
         .stat-info h3 {
             font-size: 2rem;
@@ -347,7 +385,8 @@
             text-align: left;
         }
 
-        th, td {
+        th,
+        td {
             padding: 15px 20px;
             border-bottom: 1px solid var(--border-color);
         }
@@ -375,8 +414,15 @@
             font-weight: 600;
         }
 
-        .badge.paid { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-        .badge.pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .badge.paid {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .badge.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
 
         /* Responsive */
         /* Modals */
@@ -413,20 +459,47 @@
         }
 
         @media (max-width: 1024px) {
-            .col-8, .col-4 { grid-column: span 12; }
-            .col-3 { grid-column: span 6; }
-            .modal-content { width: 80%; }
+
+            .col-8,
+            .col-4 {
+                grid-column: span 12;
+            }
+
+            .col-3 {
+                grid-column: span 6;
+            }
+
+            .modal-content {
+                width: 80%;
+            }
         }
 
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .main-content { margin-left: 0; padding: 20px; }
-            .form-grid { grid-template-columns: 1fr; }
-            .form-group.full-width { grid-column: span 1; }
-            .col-3, .col-6 { grid-column: span 12; }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .col-3,
+            .col-6 {
+                grid-column: span 12;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Sidebar -->
@@ -435,11 +508,16 @@
             <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="#" onclick="showSection('analytics')" id="nav-analytics" class="active"><i class="fas fa-chart-pie"></i> Analytics Dashboard</a></li>
-            <li><a href="#" onclick="showSection('student')" id="nav-student"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
-            <li><a href="#" onclick="showSection('staff')" id="nav-staff"><i class="fas fa-chalkboard-teacher"></i> Manage Staff</a></li>
-            <li><a href="#" onclick="showSection('fees')" id="nav-fees"><i class="fas fa-file-invoice-dollar"></i> Fee Structure</a></li>
-            <li><a href="#" onclick="showSection('announcements')" id="nav-announcements"><i class="fas fa-bullhorn"></i> Announcements</a></li>
+            <li><a href="#" onclick="showSection('analytics')" id="nav-analytics" class="active"><i
+                        class="fas fa-chart-pie"></i> Analytics Dashboard</a></li>
+            <li><a href="#" onclick="showSection('student')" id="nav-student"><i class="fas fa-user-graduate"></i>
+                    Manage Students</a></li>
+            <li><a href="#" onclick="showSection('staff')" id="nav-staff"><i class="fas fa-chalkboard-teacher"></i>
+                    Manage Staff</a></li>
+            <li><a href="#" onclick="showSection('fees')" id="nav-fees"><i class="fas fa-file-invoice-dollar"></i> Fee
+                    Structure</a></li>
+            <li><a href="#" onclick="showSection('announcements')" id="nav-announcements"><i
+                        class="fas fa-bullhorn"></i> Announcements</a></li>
         </ul>
         <div class="logout-btn">
             <a href="/logout"><i class="fas fa-sign-out-alt"></i> Secure Logout</a>
@@ -509,7 +587,8 @@
                     <div class="card glass" style="height: 400px;">
                         <div class="card-header"><i class="fas fa-chart-line"></i> AI Overview Insights</div>
                         <div style="padding: 20px; color: var(--text-muted); line-height: 1.6;">
-                            <p><i class="fas fa-robot" style="color: var(--primary-color);"></i> System running optimally.</p>
+                            <p><i class="fas fa-robot" style="color: var(--primary-color);"></i> System running
+                                optimally.</p>
                             <br>
                             <p><strong>Database Status:</strong> Healthy</p>
                             <p><strong>Student Capacity:</strong> 85% utilized</p>
@@ -576,7 +655,8 @@
                                     <input type="file" name="photo" class="form-control" accept="image/*">
                                 </div>
                                 <div class="form-group full-width">
-                                    <button type="submit" class="btn"><i class="fas fa-save"></i> Save Student Record</button>
+                                    <button type="submit" class="btn"><i class="fas fa-save"></i> Save Student
+                                        Record</button>
                                 </div>
                             </div>
                         </form>
@@ -607,12 +687,16 @@
                                         <td>{{ s.year }}</td>
                                         <td>
                                             <div style="display:flex; gap:10px;">
-                                                <button class="btn" style="padding: 6px 12px; font-size: 0.85rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa;" 
-                                                        onclick="openEditStudentModal('{{ s.id }}', '{{ s.name }}', '{{ s.reg }}', '{{ s.dept }}', '{{ s.year }}', '{{ s.dob }}', '{{ s.parent_name }}', '{{ s.parent_contact }}', '{{ s.parent_occ }}', '{{ s.income }}', '{{ s.course }}', '{{ s.course_id }}')">
+                                                <button class="btn"
+                                                    style="padding: 6px 12px; font-size: 0.85rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa;"
+                                                    onclick="openEditStudentModal('{{ s.id }}', '{{ s.name }}', '{{ s.reg }}', '{{ s.dept }}', '{{ s.year }}', '{{ s.dob }}', '{{ s.parent_name }}', '{{ s.parent_contact }}', '{{ s.parent_occ }}', '{{ s.income }}', '{{ s.course }}', '{{ s.course_id }}')">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </button>
-                                                <form method="POST" action="/admin/delete_student/{{ s.id }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this student?')">
-                                                    <button type="submit" class="btn" style="padding: 6px 12px; font-size: 0.85rem; background: rgba(239, 68, 68, 0.2); color: #f87171;">
+                                                <form method="POST" action="/admin/delete_student/{{ s.id }}"
+                                                    style="display:inline;"
+                                                    onsubmit="return confirm('Are you sure you want to delete this student?')">
+                                                    <button type="submit" class="btn"
+                                                        style="padding: 6px 12px; font-size: 0.85rem; background: rgba(239, 68, 68, 0.2); color: #f87171;">
                                                         <i class="fas fa-trash"></i> Delete
                                                     </button>
                                                 </form>
@@ -620,7 +704,9 @@
                                         </td>
                                     </tr>
                                     {% else %}
-                                    <tr><td colspan="5" style="text-align:center;">No students found</td></tr>
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">No students found</td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -651,7 +737,8 @@
                                 <label class="form-label">Subject</label>
                                 <input type="text" name="subject" class="form-control" required>
                             </div>
-                            <button type="submit" class="btn" style="width: 100%;"><i class="fas fa-plus"></i> Add Staff</button>
+                            <button type="submit" class="btn" style="width: 100%;"><i class="fas fa-plus"></i> Add
+                                Staff</button>
                         </form>
                     </div>
                 </div>
@@ -675,15 +762,21 @@
                                         <td>#{{ st.id }}</td>
                                         <td><strong>{{ st.name }}</strong></td>
                                         <td>{{ st.dept }}</td>
-                                        <td><span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd;">{{ st.subject }}</span></td>
+                                        <td><span class="badge"
+                                                style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd;">{{
+                                                st.subject }}</span></td>
                                         <td>
                                             <div style="display:flex; gap:10px;">
-                                                <button class="btn" style="padding: 6px 12px; font-size: 0.85rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa;" 
-                                                        onclick="openEditStaffModal('{{ st.id }}', '{{ st.name }}', '{{ st.dept }}', '{{ st.subject }}')">
+                                                <button class="btn"
+                                                    style="padding: 6px 12px; font-size: 0.85rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa;"
+                                                    onclick="openEditStaffModal('{{ st.id }}', '{{ st.name }}', '{{ st.dept }}', '{{ st.subject }}')">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </button>
-                                                <form method="POST" action="/admin/delete_staff/{{ st.id }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this staff member?')">
-                                                    <button type="submit" class="btn" style="padding: 6px 12px; font-size: 0.85rem; background: rgba(239, 68, 68, 0.2); color: #f87171;">
+                                                <form method="POST" action="/admin/delete_staff/{{ st.id }}"
+                                                    style="display:inline;"
+                                                    onsubmit="return confirm('Are you sure you want to delete this staff member?')">
+                                                    <button type="submit" class="btn"
+                                                        style="padding: 6px 12px; font-size: 0.85rem; background: rgba(239, 68, 68, 0.2); color: #f87171;">
                                                         <i class="fas fa-trash"></i> Delete
                                                     </button>
                                                 </form>
@@ -691,7 +784,9 @@
                                         </td>
                                     </tr>
                                     {% else %}
-                                    <tr><td colspan="5" style="text-align:center;">No staff added yet</td></tr>
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">No staff added yet</td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -730,7 +825,8 @@
                                 <label class="form-label" style="color: var(--success);">Paid Amount ($)</label>
                                 <input type="number" step="0.01" name="paid_amount" class="form-control">
                             </div>
-                            <button type="submit" class="btn" style="width: 100%;"><i class="fas fa-sync"></i> Calculate & Update</button>
+                            <button type="submit" class="btn" style="width: 100%;"><i class="fas fa-sync"></i> Calculate
+                                & Update</button>
                         </form>
                     </div>
                 </div>
@@ -753,11 +849,14 @@
                                     <tr>
                                         <td>
                                             <strong>{{ f.name }}</strong><br>
-                                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ f.reg }}</span>
+                                            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ f.reg
+                                                }}</span>
                                         </td>
                                         <td>${{ "%.2f"|format(f.total_fee if f.total_fee else 0) }}</td>
-                                        <td style="color: var(--success);">${{ "%.2f"|format(f.paid_amount if f.paid_amount else 0) }}</td>
-                                        <td style="color: var(--danger);">${{ "%.2f"|format(f.due_amount if f.due_amount else 0) }}</td>
+                                        <td style="color: var(--success);">${{ "%.2f"|format(f.paid_amount if
+                                            f.paid_amount else 0) }}</td>
+                                        <td style="color: var(--danger);">${{ "%.2f"|format(f.due_amount if f.due_amount
+                                            else 0) }}</td>
                                         <td>
                                             {% if f.status == 'Paid' %}
                                             <span class="badge paid">Paid</span>
@@ -767,7 +866,9 @@
                                         </td>
                                     </tr>
                                     {% else %}
-                                    <tr><td colspan="5" style="text-align:center;">No fee records found</td></tr>
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">No fee records found</td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -794,7 +895,8 @@
                                 <label class="form-label">Message</label>
                                 <textarea name="message" class="form-control" rows="4" required></textarea>
                             </div>
-                            <button type="submit" class="btn" style="width: 100%;"><i class="fas fa-paper-plane"></i> Broadcast</button>
+                            <button type="submit" class="btn" style="width: 100%;"><i class="fas fa-paper-plane"></i>
+                                Broadcast</button>
                         </form>
                     </div>
                 </div>
@@ -816,17 +918,22 @@
                                     <tr>
                                         <td><strong>{{ ann.title }}</strong></td>
                                         <td>{{ ann.message }}</td>
-                                        <td><span style="font-size: 0.8rem; color: var(--text-muted);">{{ ann.created_at[:10] }}</span></td>
+                                        <td><span style="font-size: 0.8rem; color: var(--text-muted);">{{
+                                                ann.created_at[:10] }}</span></td>
                                         <td>
-                                            <form method="POST" action="/admin/delete_announcement/{{ ann.id }}" style="display:inline;">
-                                                <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.2); color: var(--danger); padding: 5px 10px; font-size: 0.8rem;">
+                                            <form method="POST" action="/admin/delete_announcement/{{ ann.id }}"
+                                                style="display:inline;">
+                                                <button type="submit" class="btn"
+                                                    style="background: rgba(239, 68, 68, 0.2); color: var(--danger); padding: 5px 10px; font-size: 0.8rem;">
                                                     <i class="fas fa-trash"></i> Delete
                                                 </button>
                                             </form>
                                         </td>
                                     </tr>
                                     {% else %}
-                                    <tr><td colspan="4" style="text-align:center;">No announcements found</td></tr>
+                                    <tr>
+                                        <td colspan="4" style="text-align:center;">No announcements found</td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -890,7 +997,8 @@
                         <input type="text" name="course_id" id="edit-stu-course-id" class="form-control">
                     </div>
                 </div>
-                <button type="submit" class="btn" style="margin-top: 20px; width: 100%;"><i class="fas fa-save"></i> Update Student Record</button>
+                <button type="submit" class="btn" style="margin-top: 20px; width: 100%;"><i class="fas fa-save"></i>
+                    Update Student Record</button>
             </form>
         </div>
     </div>
@@ -914,7 +1022,8 @@
                     <label class="form-label">Subject</label>
                     <input type="text" name="subject" id="edit-staff-subject" class="form-control" required>
                 </div>
-                <button type="submit" class="btn" style="margin-top: 25px; width: 100%;"><i class="fas fa-save"></i> Save Changes</button>
+                <button type="submit" class="btn" style="margin-top: 25px; width: 100%;"><i class="fas fa-save"></i>
+                    Save Changes</button>
             </form>
         </div>
     </div>
@@ -948,7 +1057,7 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
@@ -958,7 +1067,7 @@
             // Hide all
             document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.sidebar-menu a').forEach(nav => nav.classList.remove('active'));
-            
+
             // Show target
             document.getElementById('section-' + sectionId).classList.add('active');
             document.getElementById('nav-' + sectionId).classList.add('active');
@@ -971,47 +1080,49 @@
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const section = urlParams.get('section');
-            if(section) {
+            if (section) {
                 showSection(section);
             }
 
             // Render Chart.js
             const ctxDept = document.getElementById('deptChart').getContext('2d');
-            const deptLabels = {{ dept_labels | tojson }};
-            const deptData = {{ dept_data | tojson }};
+            const deptLabels = {{ dept_labels | tojson
+        }};
+        const deptData = {{ dept_data | tojson }};
 
-            new Chart(ctxDept, {
-                type: 'bar',
-                data: {
-                    labels: deptLabels,
-                    datasets: [{
-                        label: 'Students Enrolled',
-                        data: deptData,
-                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                        borderRadius: 6,
-                        borderWidth: 0
-                    }]
+        new Chart(ctxDept, {
+            type: 'bar',
+            data: {
+                labels: deptLabels,
+                datasets: [{
+                    label: 'Students Enrolled',
+                    data: deptData,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderRadius: 6,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#94a3b8' }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                            ticks: { color: '#94a3b8' }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#94a3b8' }
-                        }
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8' }
                     }
                 }
-            });
+            }
+        });
         });
     </script>
 </body>
+
 </html>
