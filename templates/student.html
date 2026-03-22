@@ -900,15 +900,15 @@
                 <form id="leave-od-form" style="display: flex; flex-direction: column; gap: 15px;">
                     <div>
                         <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Student Name</label>
-                        <input type="text" value="{{ student[1] }}" readonly style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; background: #e9ecef; outline: none; margin-top: 5px; color: var(--text-dark);">
+                        <input type="text" id="req-name" value="{{ student[1] }}" readonly style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; background: #e9ecef; outline: none; margin-top: 5px; color: var(--text-dark);">
                     </div>
                     <div>
                         <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Register Number</label>
-                        <input type="text" value="{{ student[2] }}" readonly required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; background: #e9ecef; outline: none; margin-top: 5px; color: var(--text-dark);">
+                        <input type="text" id="req-reg" value="{{ student[2] }}" readonly required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; background: #e9ecef; outline: none; margin-top: 5px; color: var(--text-dark);">
                     </div>
                     <div>
                         <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Request Type</label>
-                        <select required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; background: white; color: var(--text-dark);">
+                        <select id="req-type" required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; background: white; color: var(--text-dark);">
                             <option value="">Select Type</option>
                             <option value="Leave">Leave</option>
                             <option value="OD">On Duty (OD)</option>
@@ -917,23 +917,63 @@
                     <div style="display: flex; gap: 15px;">
                         <div style="flex: 1;">
                             <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">From Date</label>
-                            <input type="date" required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; color: var(--text-dark);">
+                            <input type="date" id="req-from" required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; color: var(--text-dark);">
                         </div>
                         <div style="flex: 1;">
                             <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">To Date</label>
-                            <input type="date" required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; color: var(--text-dark);">
+                            <input type="date" id="req-to" required style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; color: var(--text-dark);">
                         </div>
                     </div>
                     <div>
                         <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Reason</label>
-                        <textarea rows="3" required placeholder="Briefly describe the reason..." style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; resize: vertical; color: var(--text-dark);"></textarea>
+                        <textarea id="req-reason" rows="3" required placeholder="Briefly describe the reason..." style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; outline: none; margin-top: 5px; resize: vertical; color: var(--text-dark);"></textarea>
                     </div>
                     <div>
                         <label style="font-size: 0.9rem; font-weight: 500; color: var(--secondary-color);">Upload Document</label>
-                        <input type="file" style="width: 100%; padding: 5px 0; margin-top: 5px; font-size: 0.9rem; color: var(--secondary-color);">
+                        <input type="file" id="req-doc" style="width: 100%; padding: 5px 0; margin-top: 5px; font-size: 0.9rem; color: var(--secondary-color);">
                     </div>
-                    <button type="button" style="background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 10px;">Submit Request</button>
+                    <button type="submit" id="req-submit-btn" style="background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 10px;">Submit Request</button>
                 </form>
+
+                <script>
+                    document.getElementById('leave-od-form').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const btn = document.getElementById('req-submit-btn');
+                        btn.disabled = true;
+                        btn.innerText = 'Submitting...';
+
+                        const data = {
+                            request_type: document.getElementById('req-type').value,
+                            from_date: document.getElementById('req-from').value,
+                            to_date: document.getElementById('req-to').value,
+                            reason: document.getElementById('req-reason').value
+                        };
+
+                        fetch('/submit_request', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then(response => response.json())
+                        .then(res => {
+                            if(res.success) {
+                                alert(res.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + res.message);
+                                btn.disabled = false;
+                                btn.innerText = 'Submit Request';
+                            }
+                        })
+                        .catch(err => {
+                            alert('Failed to submit request.');
+                            btn.disabled = false;
+                            btn.innerText = 'Submit Request';
+                        });
+                    });
+                </script>
             </div>
 
             <!-- Status Table Card -->
@@ -960,9 +1000,9 @@
                                 <td>{{ req[3] }}</td>
                                 <td>{{ req[4] }}</td>
                                 <td>
-                                    {% if req[6] == 'Approved' %}
+                                    {% if req[10] == 'Approved' %}
                                     <span style="background: var(--success-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Approved</span>
-                                    {% elif req[6] == 'Pending' %}
+                                    {% elif req[10] == 'Pending' %}
                                     <span style="background: var(--warning-color); color: #000; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Pending</span>
                                     {% else %}
                                     <span style="background: var(--danger-color); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Rejected</span>
@@ -1163,22 +1203,21 @@
                 chatbox.appendChild(createChatLi(userMessage, "chat-outgoing"));
                 chatbox.scrollTo(0, chatbox.scrollHeight);
 
-                // Simulate slight delay in Bot response for realism
-                setTimeout(() => {
-                    let msgLower = userMessage.toLowerCase();
-                    let botResponse = "I didn’t understand. Try asking about attendance, marks, or fees.";
-
-                    // Simple keyword matching
-                    for (let key in responses) {
-                        if (msgLower.includes(key)) {
-                            botResponse = responses[key];
-                            break;
-                        }
-                    }
-
-                    chatbox.appendChild(createChatLi(botResponse, "chat-incoming"));
+                // Fetch from Backend
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMessage })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    chatbox.appendChild(createChatLi(data.response, "chat-incoming"));
                     chatbox.scrollTo(0, chatbox.scrollHeight);
-                }, 600);
+                })
+                .catch(err => {
+                    chatbox.appendChild(createChatLi("Sorry, I had trouble connecting to the server.", "chat-incoming"));
+                    chatbox.scrollTo(0, chatbox.scrollHeight);
+                });
             }
 
             sendChatBtn.addEventListener("click", handleChat);

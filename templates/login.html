@@ -4,33 +4,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Smart College Assistant</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Smart College Assistant</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Background */
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+        }
+
+        /* Floating animation */
+        .background span {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            animation: animate 20s linear infinite;
+            bottom: -150px;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+            }
+        }
+
+        /* LEFT FEATURES */
+        .features {
+            position: absolute;
+            left: 5%;
+            top: 15%;
+            width: 260px;
+            color: #fff;
+        }
+
+        .feature-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        /* RIGHT INFO */
+        .right-info {
+            position: absolute;
+            right: 5%;
+            top: 15%;
+            width: 260px;
+            color: #fff;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .stats {
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 18px;
+            border-radius: 10px;
+        }
+
+        /* LOGIN BOX (BIG) */
+        .login-box {
+            width: 420px;
+            padding: 45px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(18px);
+            border-radius: 18px;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Title */
+        h2 {
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+
+        /* Inputs */
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        /* Password */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle {
+            position: absolute;
+            right: 10px;
+            top: 14px;
+            cursor: pointer;
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Error */
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div class="container" style="max-width: 400px; margin-top: 100px;">
+    <!-- Floating background -->
+    <div class="background">
+        <span style="left:10%; animation-duration:15s;"></span>
+        <span style="left:25%; animation-duration:18s;"></span>
+        <span style="left:50%; animation-duration:22s;"></span>
+        <span style="left:70%; animation-duration:17s;"></span>
+        <span style="left:90%; animation-duration:25s;"></span>
+    </div>
 
-        <div class="nav">
-            <h1>Smart College Assistant</h1>
-        </div>
+    <!-- FEATURES LEFT -->
+    <div class="features">
+        <h3>✨ Features</h3>
+        <div class="feature-box">📊 Attendance Tracking</div>
+        <div class="feature-box">📝 Internal Marks</div>
+        <div class="feature-box">💰 Fee Management</div>
+        <div class="feature-box">📢 Announcements</div>
+        <div class="feature-box">📩 Leave / OD Requests</div>
+        <div class="feature-box">🤖 Smart Chatbot</div>
+    </div>
 
-        <div class="card">
-            <h2 style="text-align:center;">Login</h2>
+    <!-- LOGIN CENTER -->
+    <div class="login-box">
 
-            {% if error %}
-            <p style="color:red; text-align:center;">{{ error }}</p>
-            {% endif %}
+        <h2>🎓 Smart College Assistant</h2>
 
-            <form method="POST" action="/login">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-        </div>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="/login">
+
+            <input type="text" name="username" placeholder="Enter Username" required>
+
+            <div class="password-wrapper">
+                <input type="password" id="password" name="password" placeholder="Enter Password" required>
+                <span class="toggle" onclick="togglePassword()">👁️</span>
+            </div>
+
+            <button type="submit">Login</button>
+
+        </form>
 
     </div>
+
+    <!-- RIGHT INFO -->
+    <div class="right-info">
+        <h3>📌 Why Use This?</h3>
+
+        <div class="info-box">🎯 Centralized System</div>
+        <div class="info-box">⚡ Real-time Updates</div>
+        <div class="info-box">📊 Performance Tracking</div>
+        <div class="info-box">📩 Easy Requests</div>
+        <div class="info-box">🔔 Instant Alerts</div>
+
+        <h3 style="margin-top:20px;">📈 Stats</h3>
+        <div class="stats">
+            <p>👨‍🎓 Students: 1000+</p>
+            <p>👨‍🏫 Staff: 50+</p>
+            <p>📂 Modules: 10+</p>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            let p = document.getElementById("password");
+            p.type = (p.type === "password") ? "text" : "password";
+        }
+    </script>
 
 </body>
 

@@ -695,13 +695,12 @@
             if (action === 'Approved') btnApprove.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             else btnReject.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-            fetch('/staff/update_request', {
+            fetch('/update_request/' + reqId, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    request_id: reqId,
                     action: action,
                     remark: remarkText
                 })
