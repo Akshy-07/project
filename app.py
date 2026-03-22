@@ -196,6 +196,39 @@ def add_student_full():
         conn.close()
     return redirect(url_for('admin_dashboard'))
 
+@app.route('/admin/delete_student/<int:id>', methods=['POST'])
+def delete_student(id):
+    if session.get('role') != 'admin': return redirect(url_for('login'))
+    conn = get_db_connection()
+    try:
+        conn.execute("DELETE FROM students WHERE id = ?", (id,))
+        conn.commit()
+    except Exception as e:
+        logging.error(f"Error deleting student: {e}")
+    finally:
+        conn.close()
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/edit_student', methods=['POST'])
+def edit_student():
+    if session.get('role') != 'admin': return redirect(url_for('login'))
+    data = request.form
+    stu_id = data.get('id')
+    conn = get_db_connection()
+    try:
+        conn.execute('''
+            UPDATE students SET name=?, reg=?, dept=?, year=?, dob=?, parent_name=?, parent_contact=?, parent_occ=?, income=?, course=?, course_id=?
+            WHERE id=?
+        ''', (data.get('name'), data.get('reg'), data.get('dept'), data.get('year'),
+              data.get('dob'), data.get('parent_name'), data.get('parent_contact'), data.get('parent_occ'),
+              data.get('income'), data.get('course'), data.get('course_id'), stu_id))
+        conn.commit()
+    except Exception as e:
+        logging.error(f"Error editing student: {e}")
+    finally:
+        conn.close()
+    return redirect(url_for('admin_dashboard'))
+
 @app.route('/admin/add_staff', methods=['POST'])
 def add_staff():
     if session.get('role') != 'admin': 
@@ -215,6 +248,35 @@ def add_staff():
     except Exception as e: 
         logging.error(f"Error adding staff: {e}")
     finally: 
+        conn.close()
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/delete_staff/<int:id>', methods=['POST'])
+def delete_staff(id):
+    if session.get('role') != 'admin': return redirect(url_for('login'))
+    conn = get_db_connection()
+    try:
+        conn.execute("DELETE FROM staff WHERE id = ?", (id,))
+        conn.commit()
+    except Exception as e:
+        logging.error(f"Error deleting staff: {e}")
+    finally:
+        conn.close()
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/edit_staff', methods=['POST'])
+def edit_staff():
+    if session.get('role') != 'admin': return redirect(url_for('login'))
+    data = request.form
+    staff_id = data.get('id')
+    conn = get_db_connection()
+    try:
+        conn.execute("UPDATE staff SET name=?, dept=?, subject=? WHERE id=?", 
+                     (data.get('name'), data.get('dept'), data.get('subject'), staff_id))
+        conn.commit()
+    except Exception as e:
+        logging.error(f"Error editing staff: {e}")
+    finally:
         conn.close()
     return redirect(url_for('admin_dashboard'))
 

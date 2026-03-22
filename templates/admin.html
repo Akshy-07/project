@@ -379,9 +379,43 @@
         .badge.pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
 
         /* Responsive */
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            margin: 5% auto;
+            padding: 30px;
+            width: 50%;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
         @media (max-width: 1024px) {
             .col-8, .col-4 { grid-column: span 12; }
             .col-3 { grid-column: span 6; }
+            .modal-content { width: 80%; }
         }
 
         @media (max-width: 768px) {
@@ -561,8 +595,7 @@
                                         <th>Name</th>
                                         <th>Dept</th>
                                         <th>Year</th>
-                                        <th>DOB</th>
-                                        <th>Course</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -572,11 +605,22 @@
                                         <td>{{ s.name }}</td>
                                         <td>{{ s.dept }}</td>
                                         <td>{{ s.year }}</td>
-                                        <td>{{ s.dob if s.dob else '-' }}</td>
-                                        <td>{{ s.course if s.course else '-' }}</td>
+                                        <td>
+                                            <div style="display:flex; gap:10px;">
+                                                <button class="btn" style="padding: 6px 12px; font-size: 0.85rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa;" 
+                                                        onclick="openEditStudentModal('{{ s.id }}', '{{ s.name }}', '{{ s.reg }}', '{{ s.dept }}', '{{ s.year }}', '{{ s.dob }}', '{{ s.parent_name }}', '{{ s.parent_contact }}', '{{ s.parent_occ }}', '{{ s.income }}', '{{ s.course }}', '{{ s.course_id }}')">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </button>
+                                                <form method="POST" action="/admin/delete_student/{{ s.id }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this student?')">
+                                                    <button type="submit" class="btn" style="padding: 6px 12px; font-size: 0.85rem; background: rgba(239, 68, 68, 0.2); color: #f87171;">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     </tr>
                                     {% else %}
-                                    <tr><td colspan="6" style="text-align:center;">No students found</td></tr>
+                                    <tr><td colspan="5" style="text-align:center;">No students found</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -622,6 +666,7 @@
                                         <th>Name</th>
                                         <th>Department</th>
                                         <th>Subject</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -631,9 +676,22 @@
                                         <td><strong>{{ st.name }}</strong></td>
                                         <td>{{ st.dept }}</td>
                                         <td><span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd;">{{ st.subject }}</span></td>
+                                        <td>
+                                            <div style="display:flex; gap:10px;">
+                                                <button class="btn" style="padding: 6px 12px; font-size: 0.85rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa;" 
+                                                        onclick="openEditStaffModal('{{ st.id }}', '{{ st.name }}', '{{ st.dept }}', '{{ st.subject }}')">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </button>
+                                                <form method="POST" action="/admin/delete_staff/{{ st.id }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this staff member?')">
+                                                    <button type="submit" class="btn" style="padding: 6px 12px; font-size: 0.85rem; background: rgba(239, 68, 68, 0.2); color: #f87171;">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     </tr>
                                     {% else %}
-                                    <tr><td colspan="4" style="text-align:center;">No staff added yet</td></tr>
+                                    <tr><td colspan="5" style="text-align:center;">No staff added yet</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -780,7 +838,122 @@
         </div>
     </section>
 
+    <!-- Student Edit Modal -->
+    <div id="editStudentModal" class="modal">
+        <div class="modal-content glass">
+            <span class="close" onclick="closeModal('editStudentModal')">&times;</span>
+            <h2><i class="fas fa-user-edit"></i> Edit Student</h2>
+            <form method="POST" action="/admin/edit_student" style="margin-top: 20px;">
+                <input type="hidden" name="id" id="edit-stu-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="name" id="edit-stu-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Roll Number</label>
+                        <input type="text" name="reg" id="edit-stu-reg" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <input type="text" name="dept" id="edit-stu-dept" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year</label>
+                        <input type="number" name="year" id="edit-stu-year" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" name="dob" id="edit-stu-dob" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Parent Name</label>
+                        <input type="text" name="parent_name" id="edit-stu-parent-name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Parent Contact</label>
+                        <input type="text" name="parent_contact" id="edit-stu-parent-contact" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Parent Occupation</label>
+                        <input type="text" name="parent_occ" id="edit-stu-parent-occ" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Income</label>
+                        <input type="text" name="income" id="edit-stu-income" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Course</label>
+                        <input type="text" name="course" id="edit-stu-course" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Course ID</label>
+                        <input type="text" name="course_id" id="edit-stu-course-id" class="form-control">
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="margin-top: 20px; width: 100%;"><i class="fas fa-save"></i> Update Student Record</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Staff Edit Modal -->
+    <div id="editStaffModal" class="modal">
+        <div class="modal-content glass">
+            <span class="close" onclick="closeModal('editStaffModal')">&times;</span>
+            <h2><i class="fas fa-user-tie"></i> Edit Staff Member</h2>
+            <form method="POST" action="/admin/edit_staff" style="margin-top: 20px;">
+                <input type="hidden" name="id" id="edit-staff-id">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" id="edit-staff-name" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-top:15px;">
+                    <label class="form-label">Department</label>
+                    <input type="text" name="dept" id="edit-staff-dept" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-top:15px;">
+                    <label class="form-label">Subject</label>
+                    <input type="text" name="subject" id="edit-staff-subject" class="form-control" required>
+                </div>
+                <button type="submit" class="btn" style="margin-top: 25px; width: 100%;"><i class="fas fa-save"></i> Save Changes</button>
+            </form>
+        </div>
+    </div>
+
     <script>
+        function openEditStudentModal(id, name, reg, dept, year, dob, pName, pContact, pOcc, income, course, cId) {
+            document.getElementById('edit-stu-id').value = id;
+            document.getElementById('edit-stu-name').value = name;
+            document.getElementById('edit-stu-reg').value = reg;
+            document.getElementById('edit-stu-dept').value = dept;
+            document.getElementById('edit-stu-year').value = year;
+            document.getElementById('edit-stu-dob').value = dob;
+            document.getElementById('edit-stu-parent-name').value = pName;
+            document.getElementById('edit-stu-parent-contact').value = pContact;
+            document.getElementById('edit-stu-parent-occ').value = pOcc;
+            document.getElementById('edit-stu-income').value = income;
+            document.getElementById('edit-stu-course').value = course;
+            document.getElementById('edit-stu-course-id').value = cId;
+            document.getElementById('editStudentModal').style.display = 'block';
+        }
+
+        function openEditStaffModal(id, name, dept, subject) {
+            document.getElementById('edit-staff-id').value = id;
+            document.getElementById('edit-staff-name').value = name;
+            document.getElementById('edit-staff-dept').value = dept;
+            document.getElementById('edit-staff-subject').value = subject;
+            document.getElementById('editStaffModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
         // Section Navigation Logic
         function showSection(sectionId) {
             // Hide all
